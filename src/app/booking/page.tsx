@@ -1,63 +1,107 @@
-import getUserProfile from "@/libs/getUserProfile";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+"use client";
 
-export default async function BookingPage() {
-  const session = await getServerSession(authOptions);
-  console.log("Session", session);
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addBooking } from "@/redux/features/bookSlice";
+import { TextField, Select, MenuItem, Button } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
 
-  if (!session) {
-    return <p>Please log in to book a vaccine.</p>;
-  }
+export default function Booking() {
+  const dispatch = useDispatch();
+  const [name, setName] = useState<string>("");
+  const [surname, setSurname] = useState<string>("");
+  const [id, setId] = useState<string>("");
+  const [hospital, setHospital] = useState<string>("");
+  const [bookingDate, setBookingDate] = useState<Date | null>(null);
 
-  let profile = null;
-  let error = null;
-
-  try {
-    const userProfile = await getUserProfile(session.user.token);
-    profile = userProfile.data;
-  } catch (e: any) {
-    error = e.message;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  const handleBooking = () => {
+    if (name && surname && id && hospital && bookingDate) {
+      const bookingData = {
+        name,
+        surname,
+        id,
+        hospital,
+        bookDate: dayjs(bookingDate).format("YYYY-MM-DD"),
+      };
+      dispatch(addBooking(bookingData));
+      // Reset form fields
+      setName("");
+      setSurname("");
+      setId("");
+      setHospital("");
+      setBookingDate(null);
+    } else {
+      alert("Please fill in all fields");
+    }
+  };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
-        Vaccine Booking
-      </h1>
-
-      {profile && (
-        <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            User Profile
-          </h2>
-
-          {profile.name && (
-            <p className="text-gray-800 mb-2">
-              Name: <span className="font-medium">{profile.name}</span>
-            </p>
-          )}
-          {profile.email && (
-            <p className="text-gray-800 mb-2">
-              Email: <span className="font-medium">{profile.email}</span>
-            </p>
-          )}
-          {profile.tel && (
-            <p className="text-gray-800 mb-2">
-              Phone: <span className="font-medium">{profile.tel}</span>
-            </p>
-          )}
-          {profile.createdAt && (
-            <p className="text-gray-800">
-              Created: <span className="font-medium">{profile.createdAt}</span>
-            </p>
-          )}
-        </div>
-      )}
+    <div className="w-full flex flex-col items-center space-y-4">
+      <div className="w-fit space-y-2">
+        <TextField
+          name="Name"
+          label="Name"
+          variant="outlined"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div className="w-fit space-y-2">
+        <TextField
+          name="Lastname"
+          label="Lastname"
+          variant="outlined"
+          value={surname}
+          onChange={(e) => setSurname(e.target.value)}
+        />
+      </div>
+      <div className="w-fit space-y-2">
+        <TextField
+          name="Citizen ID"
+          label="Citizen ID"
+          variant="outlined"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
+      </div>
+      <div className="w-fit space-y-2">
+        <Select
+          id="hospital"
+          value={hospital}
+          onChange={(e) => setHospital(e.target.value)}
+          sx={{ width: 220 }}
+        >
+          <MenuItem value="Chulalongkorn Hospital">
+            Chulalongkorn Hospital
+          </MenuItem>
+          <MenuItem value="Rajavithi Hospital">Rajavithi Hospital</MenuItem>
+          <MenuItem value="Thammasat University Hospital">
+            Thammasat University Hospital
+          </MenuItem>
+        </Select>
+      </div>
+      <div className="w-fit space-y-2">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Booking Date"
+            value={bookingDate}
+            onChange={(newValue) => setBookingDate(newValue)}
+          />
+        </LocalizationProvider>
+      </div>
+      <Button
+        name="Book Vaccine"
+        variant="contained"
+        color="primary"
+        onClick={handleBooking}
+        className="w-fit"
+        sx={{ marginTop: 2 }}
+      >
+        Book Vaccine
+      </Button>
     </div>
   );
 }

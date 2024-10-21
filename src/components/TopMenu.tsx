@@ -11,15 +11,22 @@ const TopMenu: React.FC = async () => {
       {/* <Link href="/api/auth/signin" passHref>
         Sign-in
       </Link> */}
-      {session ? (
-        <Link href="/api/auth/signout" passHref>
-          Sign-out
-        </Link>
-      ) : (
-        <Link href="/api/auth/signin" passHref>
-          Sign-in
-        </Link>
-      )}
+      <div className=" flex flex-row gap-7">
+        {session ? (
+          <Link href="/api/auth/signout" passHref>
+            Sign-out
+          </Link>
+        ) : (
+          <Link href="/api/auth/signin" passHref>
+            Sign-in
+          </Link>
+        )}
+        <div>
+          <Link href="/mybooking" passHref>
+            My Booking
+          </Link>
+        </div>
+      </div>
       <div className="flex flex-row justify-center items-center gap-5">
         <TopMenuItem label="Booking" href="/booking" />
         <Link href="/" passHref>

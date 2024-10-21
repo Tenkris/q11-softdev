@@ -21,6 +21,7 @@ const bookSlice = createSlice({
   initialState,
   reducers: {
     addBooking: (state, action: PayloadAction<BookingItem>) => {
+      console.log("addBook", state);
       const index = state.bookItems.findIndex(
         (item) => item.id === action.payload.id
       );
@@ -33,6 +34,7 @@ const bookSlice = createSlice({
       }
     },
     removeBooking: (state, action: PayloadAction<string>) => {
+      console.log("removeBook", state);
       state.bookItems = state.bookItems.filter(
         (item) => item.id !== action.payload
       );

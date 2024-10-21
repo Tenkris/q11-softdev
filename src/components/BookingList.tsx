@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeBooking } from "@/redux/features/bookSlice";
@@ -13,7 +11,13 @@ import {
 } from "@mui/material";
 
 const BookingList: React.FC = () => {
-  const bookings = useSelector((state: RootState) => state.book.bookItems);
+  // Update to access bookSlice.bookItems instead of book.bookItems
+  const bookings = useSelector((state: RootState) => {
+    console.log("log state.bookSlice = ", state.bookSlice);
+    console.log("log state.bookSlice.bookItems = ", state.bookSlice.bookItems);
+    return state.bookSlice.bookItems;
+  });
+
   const dispatch = useDispatch();
 
   const handleCancelBooking = (id: string) => {

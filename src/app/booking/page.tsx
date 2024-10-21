@@ -7,7 +7,7 @@ import { TextField, Select, MenuItem, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function Booking() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function Booking() {
   const [surname, setSurname] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [hospital, setHospital] = useState<string>("");
-  const [bookingDate, setBookingDate] = useState<Date | null>(null);
+  const [bookingDate, setBookingDate] = useState<Dayjs | null>(null);
 
   const handleBooking = () => {
     if (name && surname && id && hospital && bookingDate) {
